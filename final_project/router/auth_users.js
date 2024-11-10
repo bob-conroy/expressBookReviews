@@ -64,8 +64,15 @@ regd_users.put("/auth/review/:isbn/:review", (req, res) => {
     const review = req.params.review;
     const username = req.session.authorization['username'];
     const book = books[isbn];
+    let origReview = books[isbn].reviews;
+    console.log(origReview);
+    if (origReview[username]) {
+            origReview[username] = review;
+            book.reviews = origReview;
+            console.log(book.reviews);
+    } else {
 
-    book.reviews = {"username" : username, "review" : review};
+    }
     books[isbn] = book;
     return res.status(200).json({message: "review updated"});
 });
