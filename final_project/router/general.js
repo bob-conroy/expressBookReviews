@@ -57,14 +57,34 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const title = req.params.title;
+    let titleBooks = []
+    if (title) {
+      for(var i in books){
+          if (books[i].title === title) {
+            titleBooks.push(books[i]);
+          }
+      }    
+      if (titleBooks.length > 0) {
+         res.send(JSON.stringify(titleBooks,null,4));
+      } else {
+          return res.status(300).json({message: "Title not found"});
+      }
+  
+    } else {
+      return res.status(300).json({message: "Title not provided"});
+    }
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const isbn = req.params.isbn;
+    if (isbn) {
+        res.send(JSON.stringify(books[isbn].reviews,null,4));
+    } else {
+        return res.status(300).json({message: "ISBN not provided"});
+    }
+
 });
 
 module.exports.general = public_users;
