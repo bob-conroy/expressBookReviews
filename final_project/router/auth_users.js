@@ -64,15 +64,12 @@ regd_users.put("/auth/review/:isbn/:review", (req, res) => {
     const review = req.params.review;
     const username = req.session.authorization['username'];
     const book = books[isbn];
-    let origReview = books[isbn].reviews;
-    console.log(origReview);
-    if (origReview[username]) {
-            origReview[username] = review;
-            book.reviews = origReview;
-            console.log(book.reviews);
-    } else {
 
-    }
+    let origReview = books[isbn].reviews;
+    
+    // set object to new review or replace old one with new value.
+    origReview[username] = review;
+    book.reviews = origReview;
     books[isbn] = book;
     return res.status(200).json({message: "review updated"});
 });
@@ -80,8 +77,20 @@ regd_users.put("/auth/review/:isbn/:review", (req, res) => {
 
 // Remove a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
-    //Write your code here
-    return res.status(300).json({message: "Yet to be implemented"});
+    const isbn = req.params.isbn;
+    const username = req.session.authorization['username'];
+    const book = books[isbn];
+
+    let origReview = books[isbn].reviews;
+    
+    if (origReview[username]) {
+        delete origReview[username];
+        book.reviews = origReview;
+        books[isbn] = book;    
+        return res.status(200).json({message: "review deleted"});
+    } else {
+        return res.status(300).json({message: "review not found"});
+    }
   });
   
 module.exports.authenticated = regd_users;
